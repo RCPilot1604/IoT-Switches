@@ -1,0 +1,59 @@
+#Automation for switching a light ON after motion is detected
+- id: '1665225129958'
+  alias: Kitchen Front Light Motion Sensor ON
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: 870814c15d6506e8904d8a769afbfe47
+    entity_id: binary_sensor.kitchen_front_light_motion_sensor_0
+    domain: binary_sensor
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.kitchen_front_light_motion_sensor_1
+    below: 600
+  - condition: time
+    before: 01:00:00
+    after: 06:00:00
+    weekday:
+    - sun
+    - sat
+    - fri
+    - wed
+    - thu
+    - tue
+    - mon
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.front_kitchen_light
+  mode: single
+
+  #Automation for switching a light OFF after a period of time (preset) with no motion detected
+- id: '1665225247450'
+  alias: Kitchen Front Light Motion Sensor OFF
+  description: ''
+  trigger:
+  - platform: device
+    type: turned_on
+    device_id: b32f653c461f84a7492acb63f8304d4a
+    entity_id: switch.front_kitchen_light
+    domain: switch
+  - type: motion
+    platform: device
+    device_id: 870814c15d6506e8904d8a769afbfe47
+    entity_id: binary_sensor.kitchen_front_light_motion_sensor_0
+    domain: binary_sensor
+  condition: []
+  action:
+  - delay:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.front_kitchen_light
+  mode: restart  
